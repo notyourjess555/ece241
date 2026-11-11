@@ -1,3 +1,15 @@
+module ff (clk, resetn, d, q);
+	input clk, resetn, d;
+	output reg q;
+   always @(posedge clk) 
+	begin
+        if (~resetn)
+            q <= 1'b0;
+        else
+            q <= d;
+   end
+endmodule
+
 module part1(SW, LEDR, KEY);
 	input [1:0] SW;
 	input [0:0] KEY;
