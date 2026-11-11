@@ -1,0 +1,38 @@
+
+# Mac system files
+.DS_Store
+
+# Personal study materials
+*.pdf
+someverilogcode.v
+/Screenshot*
+/nand nor gates.png
+
+# Python
+.venv/
+__pycache__/
+
+# Quartus generated files
+**/db/
+**/incremental_db/
+**/output_files/
+
+# ModelSim generated files
+**/work/
+**/transcript
+**/vsim.wlf
+*.wlf
+
+# Exclude all PNG images
+*.png
+*.PNG
+
+# Exclude submission folders
+**/submission/
+
+# Temporary files
+*.swp
+
+# Editor backup files
+*~
+*.un~
