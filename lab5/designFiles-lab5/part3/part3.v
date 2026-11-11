@@ -38,7 +38,7 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
     reg [10:0] morsecode;
     reg [3:0] morselen;
 
-    //0 dot, 1 dash
+    //1 on, 0 off
     always @(*)
     begin
         case (alphabet)
@@ -56,7 +56,7 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
             
             C: 
             begin
-                morsecode = 1'b11101011101;
+                morsecode = 11'b11101011101;
                 morselen = 11;
             end
             
@@ -68,7 +68,7 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
     
             E:
             begin
-                morsecode = 4'b100000000000;
+                morsecode = 11'b10000000000;
                 morselen = 1;
             end
             
@@ -87,7 +87,7 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
             H: 
             begin
                 morsecode = 11'b10101010000;
-                morselen = 8;
+                morselen = 7;
             end
 
             default:
@@ -101,16 +101,16 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
     //key fsm
 
     reg current, transmit; 
-    parameter pressed = 1'b1, released = 1'b0;
+    parameter pressed = 1'b0, released = 1'b1;
 
     always @(*)
-    begin:
+    begin
         case (current)
             pressed:
                 if(KEY[1] == 1'b0)
                     transmit = pressed;
                 else
-                    transmit = released
+                    transmit = released;
 
             released:
             begin
@@ -118,6 +118,7 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
                     transmit = pressed;
                 else
                     transmit = released;
+            end
 
             default: transmit = released;
         endcase
@@ -128,15 +129,27 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
     reg [10:0] morsecode_shift;  
     reg [3:0] morselen_remaining;  
 
+    //just pressed
+    wire load;
+    assign load = (current == released) && (transmit == pressed);
+    //current like before it is released and now it is pressed
+
+    //check every clock edge and update key status
+    always @(posedge CLOCK_50) begin
+    if (KEY[0] == 1'b0)
+        current <= released;
+    else
+        current <= transmit;
+    end
+
     always @(posedge CLOCK_50)
     begin
         if(KEY[0] == 1'b0)
         begin
             morsecode_shift <= 11'b0;
             morselen_remaining <= 0;
-            current <= released;
         end
-        else if(transmit == 1'b1)
+        else if(load == 1'b1)
         begin
             morsecode_shift <= morsecode;
             morselen_remaining <= morselen;
@@ -144,12 +157,10 @@ module part3 (SW, CLOCK_50, KEY, LEDR);
         else if(enable == 1'b1 && morselen_remaining > 0)
         begin
             morsecode_shift <= {morsecode_shift[9:0], 1'b0};
-            morselen_remaining <= morselen_remaining-1;       
+            morselen_remaining <= morselen_remaining-1;
         end 
     end 
 
-    assign LEDR[0] = morsecode_shift[10];
-    
-    
+    assign LEDR[0] = morsecode_shift[10]; 
         
 endmodule
