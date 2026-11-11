@@ -1,4 +1,4 @@
-module Dff(D, clk, Q);
+module ff(D, clk, Q);
 
     input D, clk;
     output reg Q;
@@ -34,28 +34,20 @@ module part1(SW, KEY, LEDR);
     assign D8 = (y[7] | y[8]) & w & SW[0];
 
     //assign the dff
-    Dff A(D0, clk, y[0]);
-    Dff B(D1, clk, y[1]);
-    Dff C(D2, clk, y[2]);
-    Dff D(D3, clk, y[3]);
-    Dff E(D4, clk, y[4]);
-    Dff F(D5, clk, y[5]);
-    Dff G(D6, clk, y[6]);
-    Dff H(D7, clk, y[7]);
-    Dff I(D8, clk, y[8]);
+    ff A(D0, clk, y[0]);
+    ff B(D1, clk, y[1]);
+    ff C(D2, clk, y[2]);
+    ff D(D3, clk, y[3]);
+    ff E(D4, clk, y[4]);
+    ff F(D5, clk, y[5]);
+    ff G(D6, clk, y[6]);
+    ff H(D7, clk, y[7]);
+    ff I(D8, clk, y[8]);
 
     //output z = LEDR[9]
     assign LEDR[9]= y[4]| y[8];
 
     //output state codes
-    assign LEDR[8] = y[8];
-    assign LEDR[7] = y[7];
-    assign LEDR[6] = y[6];
-    assign LEDR[5] = y[5];
-    assign LEDR[4] = y[4];
-    assign LEDR[3] = y[3];
-    assign LEDR[2] = y[2];
-    assign LEDR[1] = y[1];
-    assign LEDR[0] = y[0];
-
+    assign LEDR[8:0] = y;
+   
 endmodule
